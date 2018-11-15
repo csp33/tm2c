@@ -14,10 +14,10 @@ import java.util.ArrayList;
  */
 public class DBConnection {
 
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/tm2c";
-    private static final String DB_DRV = "com.mysql.jdbc.Driver";
-    private static final String DB_USER = "username";
-    private static final String DB_PASSWORD = "password";
+    private static final String DB_URL = Parameters.DB_URL;
+    private static final String DB_DRV = Parameters.DB_DRV;
+    private static final String DB_USER = Parameters.DB_USER;
+    private static final String DB_PASSWORD = Parameters.DB_PASSWORD;
     private Connection connection = null;
     private Statement statement = null;
     private String username = null;

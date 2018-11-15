@@ -19,6 +19,9 @@
 -- Table structure for table `building`
 --
 
+CREATE DATABASE tm2c;
+USE tm2c;
+
 DROP TABLE IF EXISTS `building`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
