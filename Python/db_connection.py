@@ -135,7 +135,7 @@ class DBConnection:
                                end_time=data['end_time'], day=data['day'], room_code=data['room_code'], location=data['location'])
 
         return result
-
+"""
 obj = DBConnection()
 print(obj.login("Juan", "pass"))
 # print(obj.get_location("I"))
@@ -155,3 +155,4 @@ for x in v:
     print(x.to_s())
 
 obj.get_next_course(day="monday",time="2:00")
+"""
