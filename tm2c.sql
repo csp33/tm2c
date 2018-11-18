@@ -63,7 +63,6 @@ CREATE TABLE `course` (
 
 LOCK TABLES `course` WRITE;
 /*!40000 ALTER TABLE `course` DISABLE KEYS */;
-INSERT INTO `course` VALUES ('BMM23','Trial'),('ETTHV52','Management'),('KVH4','Cisco'),('sa','try'),('VeTMABf3','Optical'),('VITMABf3','Databases'),('VITMAV52','Information and Network Security');
 /*!40000 ALTER TABLE `course` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -93,7 +92,6 @@ CREATE TABLE `imparted` (
 
 LOCK TABLES `imparted` WRITE;
 /*!40000 ALTER TABLE `imparted` DISABLE KEYS */;
-INSERT INTO `imparted` VALUES ('VITMABf3','E306cd','Thursday','13:15:00','15:00:00'),('VeTMABf3','G306cd','Monday','12:15:00','15:00:00'),('ETTHV52','GB246','MONDAY','10:15:00','14:00:00'),('KVH4','HB246','THURSDAY','16:15:00','20:00:00'),('VITMAV52','IB146','Wednesday','12:15:00','14:00:00'),('BMM23','IB147','MONDAY','12:00:00','13:00:00'),('sa','IB147','TUESDAY','22:00:00','23:00:00');
 /*!40000 ALTER TABLE `imparted` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -120,7 +118,6 @@ CREATE TABLE `is_registered` (
 
 LOCK TABLES `is_registered` WRITE;
 /*!40000 ALTER TABLE `is_registered` DISABLE KEYS */;
-INSERT INTO `is_registered` VALUES ('Juan','BMM23'),('Juan','sa');
 /*!40000 ALTER TABLE `is_registered` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -144,7 +141,6 @@ CREATE TABLE `located` (
 
 LOCK TABLES `located` WRITE;
 /*!40000 ALTER TABLE `located` DISABLE KEYS */;
-INSERT INTO `located` VALUES ('E306cd','E'),('G306cd','G'),('GB246','G'),('HB246','H'),('IB146','I'),('IB147','I');
 /*!40000 ALTER TABLE `located` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -167,7 +163,6 @@ CREATE TABLE `room` (
 
 LOCK TABLES `room` WRITE;
 /*!40000 ALTER TABLE `room` DISABLE KEYS */;
-INSERT INTO `room` VALUES ('E306cd'),('G306cd'),('GB246'),('HB246'),('IB146'),('IB147');
 /*!40000 ALTER TABLE `room` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -194,7 +189,6 @@ CREATE TABLE `student` (
 
 LOCK TABLES `student` WRITE;
 /*!40000 ALTER TABLE `student` DISABLE KEYS */;
-INSERT INTO `student` VALUES ('Juan','dce0b27ba675df41e9cc07af80ec59c475810824','Juan','juan'),('pepe','dce0b27ba675df41e9cc07af80ec59c475810824','pepe','mail');
 /*!40000 ALTER TABLE `student` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
