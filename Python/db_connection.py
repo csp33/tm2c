@@ -92,7 +92,7 @@ class DBConnection:
             row = cursor.fetchone()
             while row != None:
                 aux = course.Course(course_name=row['course_name'], course_code=row['course_code'], start_time=row['start_time'],
-                                    end_time=row['end_time'], day=row['day'], room_code=row['room_code'], location=row['location'])
+                                    end_time=row['end_time'], day=row['day'], room_code=row['room_code'])
                 print(aux.to_s())
                 result.append(aux)
                 row = cursor.fetchone()
