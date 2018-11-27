@@ -34,7 +34,6 @@ class DBConnection:
         self.username = None
 
     def get_location(self, building):
-        result = ""
         cursor = self.db.cursor()
         cursor.execute(
             "SELECT location FROM building WHERE building_code=\"{}\";".format(building))
@@ -131,8 +130,11 @@ class DBConnection:
         cursor.execute("SELECT distinct imparted.course_code,building.location,imparted.start_time,imparted.end_time,course.name course_name,imparted.day,building.building_code,imparted.room_code FROM course,imparted,located,building,is_registered WHERE course.course_code=is_registered.course_code AND located.building_code=building.building_code AND is_registered.username=\"{0}\" AND located.room_code=imparted.room_code AND imparted.course_code=is_registered.course_code AND imparted.start_time>\"{1}\" AND imparted.day=\"{2}\" ORDER BY start_time;".format(
             self.username, time, day))
         data = cursor.fetchone()
-        result = course.Course(course_name=data['course_name'], course_code=data['course_code'], start_time=data['start_time'],
-                               end_time=data['end_time'], day=data['day'], room_code=data['room_code'], location=data['location'])
+        if data==None:
+            result=None
+        else:
+            result = course.Course(course_name=data['course_name'], course_code=data['course_code'], start_time=data['start_time'],
+                                   end_time=data['end_time'], day=data['day'], room_code=data['room_code'])
 
         return result
 """

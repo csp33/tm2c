@@ -11,8 +11,8 @@ class Course:
         self.end_time = end_time
         self.day = day.upper()
         self.room_code = room_code
-        self.building_location = tmp.get_location(room_code[0])
         self.building_code = room_code[0]
+        self.building_location = tmp.get_location(self.building_code)
 
     def to_s(self):
         return "*Course name*: {0}\n*Course code*: {1}\n*Course day*: {2}\n*Course start time*: {3}\n*Course end time*: {4}\n*Course building*: {5}\n*Course room*: {6} \n".format(self.course_name, self.course_code,
@@ -30,3 +30,20 @@ def take_me(code):
     location = tmp.get_location(building)
     return 'Go to building {} ({})'.format(building.upper(), location), 'Go to floor {}'.format(floor), 'Find room {}'.format(room_code)
     # return 'Go to building {0} ({1}).\n Go to floor {2}. Find room {3}.'.format(building.upper(), location, floor, room_code)
+
+def get_day(day):
+    if day==0:
+        result='Monday'
+    elif day==1:
+        result='Tuesday'
+    elif day==2:
+        result='Wednesday'
+    elif day==3:
+        result='Thursday'
+    elif day==4:
+        result='Friday'
+    elif day==5:
+        result='Saturday'
+    else:
+        result='Sunday'
+    return result

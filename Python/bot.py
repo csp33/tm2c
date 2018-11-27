@@ -5,6 +5,7 @@ import time
 import db_connection
 from telepot.namedtuple import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
 from course import *
+import datetime
 
 bot = telepot.Bot(TOKEN)
 
@@ -21,7 +22,9 @@ course_room = None
 
 menu = [
     [KeyboardButton(text="Add a course"), KeyboardButton(text="Remove a course"),
-     KeyboardButton(text="See my courses"), KeyboardButton(text="Take me to class using the code")]
+     KeyboardButton(text="See my courses"), KeyboardButton(
+         text="Take me to class using the code"),
+     KeyboardButton(text="Take me to the next class")]
 ]
 reply_markup = ReplyKeyboardMarkup(keyboard=menu)
 
@@ -89,11 +92,11 @@ def handle(msg):
                 chat_id, 'Tell me the room of the course', reply_markup=ReplyKeyboardRemove())
         elif course_room == None:
             course_room = msg['text']
-            reset_variables()
             c = Course(course_name=course_name, day=course_day,
                        course_code=course_code, room_code=course_room,
                        end_time=course_end_time,
                        start_time=course_start_time)
+            reset_variables()
             db.add_course(c)
 
     elif removing_course:
@@ -113,7 +116,13 @@ def handle(msg):
         bot.sendMessage(chat_id, third)
         taking_to_class = False
     else:
-        if 'Add a course' in msg['text']:
+        if '/start' in msg['text']:
+            db.create_user(username=chat_id, password='1234',
+                           name=msg['from']['first_name'], email='mail')
+            db.login(username=chat_id, password="1234")
+            bot.sendMessage(chat_id, "Welcome {}!".format(
+                msg['from']['first_name']), reply_markup=ReplyKeyboardRemove())
+        elif 'Add a course' in msg['text']:
             # Add course
             adding_course = True
             bot.sendMessage(
@@ -128,19 +137,32 @@ def handle(msg):
             # See my courses
             courses = db.get_all_courses()
             for c in courses:
-                bot.sendMessage(chat_id, c.to_s(),parse_mode= 'Markdown')
+                bot.sendMessage(chat_id, c.to_s(), parse_mode='Markdown')
 
         elif 'Take me to class using the code' in msg['text']:
             # Take me to class using the code
             bot.sendMessage(
                 chat_id, 'Tell me the code of the course you want to go', reply_markup=ReplyKeyboardRemove())
             taking_to_class = True
+        elif 'Take me to the next class' in msg['text']:
+            now = datetime.datetime.now()
+            day = get_day(datetime.datetime.today().weekday())
+            course = db.get_next_course(day=day, time=now.strftime("%H:%M"))
+            if course == None:
+                bot.sendMessage(chat_id, "You don't have any courses today.")
+            else:
+                bot.sendMessage(chat_id, "Your next course is *{}*".format(course.course_name), parse_mode='Markdown')
+                first, second, third = take_me(course.room_code)
+                bot.sendMessage(chat_id, first)
+                bot.sendMessage(chat_id, second)
+                bot.sendMessage(chat_id, third)
         else:
             bot.sendMessage(chat_id, 'Unavailable option')
     if not taking_to_class and not adding_course and not removing_course:
         # bot.sendMessage(
         #    chat_id, 'Add a course/Remove a course/See my courses/Take me to class using the code')
-        bot.sendMessage(chat_id, 'Choose an option:', reply_markup=reply_markup)
+        bot.sendMessage(chat_id, 'Choose an option:',
+                        reply_markup=reply_markup)
 
 
 MessageLoop(bot, handle).run_as_thread()
