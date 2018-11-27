@@ -151,7 +151,7 @@ def handle(msg):
                 for c in courses:
                     bot.sendMessage(chat_id, c.to_s(), parse_mode='Markdown')
 
-        elif 'Take me to class using the code' in msg['text']:
+        elif 'Take me to class using the room code' in msg['text']:
             # Take me to class using the code
             bot.sendMessage(
                 chat_id, 'Tell me the code of the course you want to go', reply_markup=ReplyKeyboardRemove())
