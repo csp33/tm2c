@@ -2,11 +2,10 @@ import db_connection
 
 
 class Course:
-    def __init__(self, course_name, course_code, start_time, end_time,
+    def __init__(self, course_name, start_time, end_time,
                  day, room_code):
         tmp = db_connection.DBConnection()
         self.course_name = course_name
-        self.course_code = course_code
         self.start_time = start_time
         self.end_time = end_time
         self.day = day.upper()
@@ -15,7 +14,7 @@ class Course:
         self.building_location = tmp.get_location(self.building_code)
 
     def to_s(self):
-        return "*Course name*: {0}\n*Course code*: {1}\n*Course day*: {2}\n*Course start time*: {3}\n*Course end time*: {4}\n*Course building*: {5}\n*Course room*: {6} \n".format(self.course_name, self.course_code,
+        return "*Course name*: {0}\n*Course day*: {1}\n*Course start time*: {2}\n*Course end time*: {3}\n*Course building*: {4}\n*Course room*: {5} \n".format(self.course_name,
                                                                                                self.day, self.start_time, self.end_time, self.building_code, self.room_code)
 
 

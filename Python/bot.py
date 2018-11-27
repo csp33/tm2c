@@ -13,7 +13,6 @@ adding_course = False
 removing_course = False
 taking_to_class = False
 
-course_code = None
 course_name = None
 course_day = None
 course_start_time = None
@@ -22,18 +21,25 @@ course_room = None
 
 menu = [
     [KeyboardButton(text="Add a course"), KeyboardButton(text="Remove a course"),
-     KeyboardButton(text="See my courses"), KeyboardButton(
-         text="Take me to class using the code"),
+     KeyboardButton(text="See my courses")],[KeyboardButton(
+         text="Take me to class using the room code"),
      KeyboardButton(text="Take me to the next class")]
 ]
-reply_markup = ReplyKeyboardMarkup(keyboard=menu)
+main_keyboard = ReplyKeyboardMarkup(keyboard=menu)
+
+days = [
+    [KeyboardButton(text="Monday"), KeyboardButton(text="Tuesday"),
+     KeyboardButton(text="Wednesday"), KeyboardButton(
+         text="Thursday"),
+     KeyboardButton(text="Friday")]
+]
+week_keyboard=ReplyKeyboardMarkup(keyboard=days)
 
 
 def reset_variables():
     global adding_course
     global removing_course
     global course_day
-    global course_code
     global course_name
     global course_room
     global course_start_time
@@ -44,7 +50,6 @@ def reset_variables():
     removing_course = False
     taking_to_class = False
 
-    course_code = None
     course_name = None
     course_day = None
     course_start_time = None
@@ -53,14 +58,12 @@ def reset_variables():
 
 
 db = db_connection.DBConnection()
-db.login("Juan", "pass")
 
 
 def handle(msg):
     global adding_course
     global removing_course
     global course_day
-    global course_code
     global course_name
     global course_room
     global course_start_time
@@ -70,14 +73,10 @@ def handle(msg):
 
     content_type, chat_type, chat_id = telepot.glance(msg)
     if adding_course:
-        if course_code == None:
-            course_code = msg['text']
-            bot.sendMessage(
-                chat_id, 'Tell me the name of the course', reply_markup=ReplyKeyboardRemove())
-        elif course_name == None:
+        if course_name == None:
             course_name = msg['text']
             bot.sendMessage(
-                chat_id, 'Tell me the day of the course', reply_markup=ReplyKeyboardRemove())
+                chat_id, 'Tell me the day of the course', reply_markup=week_keyboard)
         elif course_day == None:
             course_day = msg['text']
             bot.sendMessage(
@@ -92,21 +91,20 @@ def handle(msg):
                 chat_id, 'Tell me the room of the course', reply_markup=ReplyKeyboardRemove())
         elif course_room == None:
             course_room = msg['text']
-            c = Course(course_name=course_name, day=course_day,
-                       course_code=course_code, room_code=course_room,
+            c = Course(course_name=course_name, day=course_day, room_code=course_room,
                        end_time=course_end_time,
                        start_time=course_start_time)
             reset_variables()
             db.add_course(c)
 
     elif removing_course:
-        course_code = msg['text']
-        success = db.remove_course(course_code)
-        if success:
-            msg = "Successfully removed."
-        else:
-            msg = "Wrong code"
-        bot.sendMessage(chat_id, msg, reply_markup=ReplyKeyboardRemove())
+        if "Back" not in msg['text']:
+            success = db.remove_course(msg['text'])
+            if success:
+                msg = "Successfully removed."
+            else:
+                msg = "Wrong code"
+            bot.sendMessage(chat_id, msg, reply_markup=ReplyKeyboardRemove())
         removing_course = False
     elif taking_to_class:
         code = msg['text']
@@ -117,21 +115,32 @@ def handle(msg):
         taking_to_class = False
     else:
         if '/start' in msg['text']:
-            db.create_user(username=chat_id, password='1234',
-                           name=msg['from']['first_name'], email='mail')
-            db.login(username=chat_id, password="1234")
+            db.create_user(username=chat_id,
+                           name=msg['from']['first_name'])
+            db.login(username=chat_id)
             bot.sendMessage(chat_id, "Welcome {}!".format(
                 msg['from']['first_name']), reply_markup=ReplyKeyboardRemove())
         elif 'Add a course' in msg['text']:
             # Add course
             adding_course = True
             bot.sendMessage(
-                chat_id, 'Tell me the code of the course', reply_markup=ReplyKeyboardRemove())
+                chat_id, 'Tell me the name of the course', reply_markup=ReplyKeyboardRemove())
         elif 'Remove a course' in msg['text']:
             # Remove course
-            removing_course = True
-            bot.sendMessage(
-                chat_id, 'Tell me the code of the course to remove', reply_markup=ReplyKeyboardRemove())
+            courses_menu = [[]]
+            courses=db.get_all_courses()
+            if not courses:
+                bot.sendMessage(
+                    chat_id, 'You are not registered in any course', reply_markup=ReplyKeyboardRemove())
+            else:
+                removing_course = True
+                for c in courses:
+                    courses_menu[0].append(KeyboardButton(text=c.course_name))
+                courses_menu.append([])
+                courses_menu[1].append(KeyboardButton(text="Back"))
+                deleting_keyboard = ReplyKeyboardMarkup(keyboard=courses_menu)
+                bot.sendMessage(
+                    chat_id, 'Tell me the code of the course to remove', reply_markup=deleting_keyboard)
 
         elif 'See my courses' in msg['text']:
             # See my courses
@@ -165,7 +174,7 @@ def handle(msg):
         # bot.sendMessage(
         #    chat_id, 'Add a course/Remove a course/See my courses/Take me to class using the code')
         bot.sendMessage(chat_id, 'Choose an option:',
-                        reply_markup=reply_markup)
+                        reply_markup=main_keyboard)
 
 
 MessageLoop(bot, handle).run_as_thread()
