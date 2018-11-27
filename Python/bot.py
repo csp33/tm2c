@@ -136,8 +136,11 @@ def handle(msg):
         elif 'See my courses' in msg['text']:
             # See my courses
             courses = db.get_all_courses()
-            for c in courses:
-                bot.sendMessage(chat_id, c.to_s(), parse_mode='Markdown')
+            if not courses:
+                bot.sendMessage(chat_id, "You don't have any courses.")
+            else:
+                for c in courses:
+                    bot.sendMessage(chat_id, c.to_s(), parse_mode='Markdown')
 
         elif 'Take me to class using the code' in msg['text']:
             # Take me to class using the code
